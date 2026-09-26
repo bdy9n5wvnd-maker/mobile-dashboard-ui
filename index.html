@@ -1,71 +1,111 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b0d10">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Dashboard">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon.svg">
-  <title>Dashboard</title>
-  <style>
-    :root{--bg:#0b0d10;--card:#15191e;--card2:#1b2026;--text:#f4f6f8;--muted:#9ca6b1;--line:#2a3139;--accent:#7cb7ff}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:720px;margin:auto;padding:calc(20px + env(safe-area-inset-top)) 14px calc(90px + env(safe-area-inset-bottom))}
-    header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.muted{color:var(--muted);font-size:13px}h1{margin:3px 0;font-size:28px}h2{font-size:17px;margin:0}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.section{margin:18px 0}.head{display:flex;justify-content:space-between;align-items:center;margin:0 2px 9px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{min-height:90px}.big{font-size:22px;font-weight:700;margin-top:7px}
-    .item{display:flex;gap:10px;align-items:center;min-height:48px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}
-    .text{flex:1;width:100%;border:0;background:transparent;color:var(--text);font-size:16px;outline:0;padding:12px 0}.done .text{text-decoration:line-through;color:var(--muted)}
-    .habits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.habit{min-height:70px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text)}.habit.on{border-color:var(--accent);background:#172334}
-    .capture{display:flex;gap:8px}.capture input,textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;font-size:16px;outline:0}
-    .primary,.secondary{min-height:44px;border-radius:12px;padding:0 14px}.primary{border:0;background:var(--accent);color:#07111d;font-weight:700}.secondary{border:1px solid var(--line);background:var(--card2);color:var(--text)}
-    .progress{height:7px;background:#262c33;border-radius:9px;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--accent)}
-    .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,13,16,.95);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:7px 12px calc(7px + env(safe-area-inset-bottom))}
-    .navin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.nav button{border:0;background:none;color:var(--muted);padding:10px}.nav button.on{color:var(--accent)}
-    .view{display:none}.view.on{display:block}.field{margin:12px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field input,.field textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;font-size:16px}
-    @media(max-width:430px){.habits{grid-template-columns:1fr 1fr}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dashboard">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg">
+<title>Dashboard</title>
+<style>
+:root{--bg:#0b0d10;--card:#15191e;--card2:#1b2026;--text:#f5f7f9;--muted:#98a3af;--line:#29313a;--accent:#78b7ff;--good:#77d49a;--warn:#f5bd6a;--bad:#ff8181}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:760px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.kicker,.muted{font-size:12px;color:var(--muted)}h1{font-size:29px;line-height:1.05;margin:4px 0 0;letter-spacing:-.7px}h2{font-size:17px;margin:0}h3{font-size:14px;margin:0}.date{text-align:right;color:var(--muted);font-size:12px;line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px}.section{margin:18px 0}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 9px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:15px}.ring{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--accent) 0%,#252c34 0)}.ring:after{content:"";position:absolute;width:58px;height:58px;border-radius:50%;background:var(--card)}.ring strong{z-index:1;font-size:16px}.hero-title{font-size:19px;font-weight:700}.hero-sub{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.35}
+.metric{min-height:94px}.metric .value{font-size:23px;font-weight:750;margin-top:7px}.metric .sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.3}.progress{height:6px;border-radius:9px;background:#252c34;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--accent)}
+.timeline .event{display:grid;grid-template-columns:58px 1fr;gap:9px;padding:10px 0;border-bottom:1px solid var(--line)}.timeline .event:last-child{border:0}.event-time{font-size:12px;color:var(--muted);padding-top:2px}.event-title{font-size:14px;font-weight:650}.event-sub{font-size:11px;color:var(--muted);margin-top:3px}.placeholder{border:1px dashed var(--line);border-radius:13px;padding:13px;color:var(--muted);font-size:12px;line-height:1.45}
+.item{display:flex;align-items:center;gap:10px;min-height:48px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}.itemtext{flex:1;min-width:0}.itemtext input{width:100%;background:transparent;border:0;outline:0;color:var(--text);padding:12px 0;font-size:15px}.done .itemtext input,.done .task-title{text-decoration:line-through;color:var(--muted)}
+.habits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.habit{min-height:72px;padding:9px 5px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);text-align:center}.habit.on{border-color:var(--accent);background:#172435}.habit-mark{font-size:19px}.habit-name{font-size:11px;margin-top:4px}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.action{min-height:76px;border:1px solid var(--line);background:var(--card);border-radius:15px;color:var(--text);padding:8px 5px;text-align:center}.action-icon{font-size:20px;line-height:1}.action-name{font-size:11px;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.action.empty{color:var(--muted);border-style:dashed}
+.capture{display:flex;gap:8px}.input,textarea,select,input[type=date],input[type=number],input[type=url]{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;font-size:16px;outline:0}textarea{resize:vertical}.primary,.secondary,.danger,.mini{min-height:44px;border-radius:12px;padding:0 14px}.primary{border:0;background:var(--accent);color:#07111d;font-weight:750}.secondary,.mini{background:var(--card2);border:1px solid var(--line);color:var(--text)}.danger{background:transparent;border:1px solid #5d3438;color:var(--bad)}.mini{min-height:36px;padding:0 10px;font-size:12px}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}.wd{text-align:center;color:var(--muted);font-size:10px}.bubble{width:29px;height:29px;border-radius:50%;background:#252c34;display:grid;place-items:center;margin:5px auto 0}.bubble.hit{background:var(--accent);color:#07111d;font-weight:750}
+.money{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.money:last-child{border:0}.task-title{font-size:14px}.pill{display:inline-block;border-radius:999px;padding:3px 7px;font-size:10px;background:var(--card2);color:var(--muted)}.pill.warn{color:var(--warn)}.pill.good{color:var(--good)}
+.field{margin:13px 0}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stack{display:flex;flex-direction:column;gap:8px}.settings-action{display:grid;grid-template-columns:1fr 1.5fr auto;gap:7px;align-items:center}.privacy{font-size:12px;line-height:1.5;color:var(--muted)}
+.view{display:none}.view.on{display:block}.nav{position:fixed;z-index:10;bottom:0;left:0;right:0;background:rgba(11,13,16,.94);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom))}.navin{max-width:730px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}.nav button{border:0;background:none;color:var(--muted);padding:7px 2px;font-size:10px}.nav button.on{color:var(--accent)}.navicon{display:block;font-size:18px;margin-bottom:2px}
+@media(max-width:440px){.habits,.actions{grid-template-columns:repeat(2,1fr)}.settings-action{grid-template-columns:1fr}.grid2{gap:8px}}
+</style>
 </head>
 <body>
 <div class="app">
-<header><div><div class="muted">PERSONAL DASHBOARD</div><h1 id="greeting">Today</h1></div><div class="muted" id="date"></div></header>
+<header><div><div class="kicker">COMMAND CENTER</div><h1 id="greeting">Today</h1></div><div class="date" id="date"></div></header>
+<main>
+<section id="todayView" class="view on">
+ <div class="card hero"><div class="ring" id="ring"><strong id="score">0%</strong></div><div><div class="hero-title" id="heroTitle">Start the day</div><div class="hero-sub" id="heroSub">Your priorities, habits and tasks roll up here.</div></div></div>
 
-<section id="today" class="view on">
-  <div class="grid">
-    <div class="card metric"><div class="muted">Day progress</div><div class="big" id="score">0%</div><div class="progress"><div class="bar" id="scorebar"></div></div></div>
-    <div class="card metric"><div class="muted">Open tasks</div><div class="big" id="taskcount">0</div><div class="muted" id="tasksub">Nothing overdue</div></div>
+ <div class="section"><div class="head"><h2>Next up</h2><span class="pill" id="integrationStatus">Manual for now</span></div>
+  <div class="card timeline" id="nextUp"></div>
+ </div>
+
+ <div class="section"><div class="head"><h2>At a glance</h2></div>
+  <div class="grid2">
+   <div class="card metric"><div class="muted">Open tasks</div><div class="value" id="openTasks">0</div><div class="sub" id="taskSub">Nothing overdue</div></div>
+   <div class="card metric"><div class="muted">Weekly habits</div><div class="value" id="habitPct">0%</div><div class="progress"><div class="bar" id="habitBar"></div></div></div>
+   <div class="card metric"><div class="muted">This week</div><div class="value" id="weekSpend">$0</div><div class="sub" id="budgetSub">No spending target</div></div>
+   <div class="card metric"><div class="muted">Upcoming</div><div class="value" id="eventCount">0</div><div class="sub" id="eventSub">Nothing scheduled</div></div>
   </div>
-  <div class="section"><div class="head"><h2>Top 3</h2><span class="muted" id="pcount"></span></div><div class="card" id="priorities"></div></div>
-  <div class="section"><div class="head"><h2>Daily basics</h2><span class="muted" id="hcount"></span></div><div class="habits" id="habits"></div></div>
-  <div class="section"><div class="head"><h2>Quick capture</h2></div><div class="card"><form id="captureForm" class="capture"><input id="capture" maxlength="100" placeholder="Task, reminder, idea…"><button class="primary">Add</button></form></div></div>
-  <div class="section"><div class="head"><h2>Daily note</h2><span class="muted">Saved locally</span></div><textarea id="note" rows="5" placeholder="Anything worth remembering today?"></textarea></div>
+ </div>
+
+ <div class="section"><div class="head"><h2>Quick actions</h2><button class="mini" data-nav="settingsView">Edit</button></div><div class="actions" id="quickActions"></div></div>
+
+ <div class="section"><div class="head"><h2>Top 3</h2><span class="muted" id="priorityCount"></span></div><div class="card" id="priorities"></div></div>
+ <div class="section"><div class="head"><h2>Daily basics</h2><span class="muted" id="habitCount"></span></div><div class="habits" id="habits"></div></div>
+ <div class="section"><div class="head"><h2>Quick capture</h2></div><div class="card"><form id="captureForm" class="capture"><input class="input" id="capture" maxlength="120" placeholder="Task, reminder, idea…"><button class="primary">Add</button></form></div></div>
 </section>
 
-<section id="life" class="view">
-  <div class="head"><h2>Tasks</h2><button id="newTask" class="secondary">+ Add</button></div>
-  <div class="card" id="tasks"></div>
-  <div class="section"><div class="head"><h2>Weekly summary</h2></div>
-    <div class="grid">
-      <div class="card metric"><div class="muted">Habit completion</div><div class="big" id="weekhabits">0%</div></div>
-      <div class="card metric"><div class="muted">Tasks completed</div><div class="big" id="weekdone">0</div></div>
-    </div>
-  </div>
+<section id="weekView" class="view">
+ <div class="card"><div class="kicker">THIS WEEK</div><div class="hero-title" id="weekRange" style="margin-top:5px"></div><div class="weekdays" id="weekdays"></div></div>
+ <div class="section"><div class="grid2">
+  <div class="card metric"><div class="muted">Habit completions</div><div class="value" id="habitHits">0</div></div>
+  <div class="card metric"><div class="muted">Tasks completed</div><div class="value" id="tasksDone">0</div></div>
+  <div class="card metric"><div class="muted">Events</div><div class="value" id="weekEvents">0</div></div>
+  <div class="card metric"><div class="muted">Spent</div><div class="value" id="weekSpend2">$0</div></div>
+ </div></div>
+ <div class="section"><div class="head"><h2>Weekly reflection</h2><span class="muted">Saved locally</span></div><textarea id="weekNote" rows="6" placeholder="What worked? What should change next week?"></textarea></div>
 </section>
 
-<section id="settings" class="view">
-  <div class="card">
-    <div class="field"><label>Display name (stored only on this device)</label><input id="name" maxlength="30" placeholder="Your name"></div>
-    <div class="field"><label>Habits — one per line, maximum 8</label><textarea id="habitnames" rows="6"></textarea></div>
-    <button id="saveSettings" class="primary">Save settings</button>
-  </div>
-  <div class="section card"><div class="muted">PRIVACY</div><p style="line-height:1.5">This repository contains only generic app code. Your name, tasks, habits, check-ins and notes are stored in this browser's local storage and are not written back to GitHub.</p></div>
+<section id="lifeView" class="view">
+ <div class="head"><h2>Tasks</h2><button class="secondary" id="addTask">+ Add</button></div><div class="card" id="tasks"></div>
+ <div class="section"><div class="head"><h2>Upcoming</h2><button class="secondary" id="addEvent">+ Add</button></div><div class="card" id="events"></div></div>
+ <div class="section"><div class="head"><h2>Spending</h2><button class="secondary" id="addSpend">+ Add</button></div><div class="card"><div class="money"><span class="muted">This week</span><strong id="spendTotal">$0</strong></div><div id="spending"></div></div></div>
+ <div class="section"><div class="head"><h2>Daily note</h2><span class="muted">Saved locally</span></div><textarea id="dailyNote" rows="5" placeholder="Anything worth remembering today?"></textarea></div>
 </section>
+
+<section id="settingsView" class="view">
+ <div class="card">
+  <div class="kicker">PERSONALIZATION</div>
+  <div class="field"><label>Display name — stored only on this device</label><input class="input" id="displayName" maxlength="30" placeholder="Your name"></div>
+  <div class="field"><label>Weekly discretionary spending target</label><input type="number" min="0" step="10" id="budget"></div>
+  <div class="field"><label>Daily habits — one per line, maximum 8</label><textarea id="habitNames" rows="6"></textarea></div>
+  <button class="primary" id="saveSettings">Save</button>
+ </div>
+
+ <div class="section"><div class="head"><h2>Quick actions</h2><span class="muted">URL or Shortcut links</span></div>
+  <div class="card stack" id="actionSettings"></div>
+  <div class="muted" style="margin:8px 3px 0;line-height:1.45">Examples: a normal website URL, an app URL scheme, or an Apple Shortcut URL. Empty links remain disabled.</div>
+ </div>
+
+ <div class="section"><div class="head"><h2>Integrations</h2></div>
+  <div class="card stack">
+   <div><strong>Calendar</strong><div class="privacy">Not connected yet. V3 will use an Apple Shortcut bridge rather than putting calendar data in GitHub.</div></div>
+   <div style="border-top:1px solid var(--line);padding-top:12px"><strong>Reminders</strong><div class="privacy">Not connected yet. V3 will use the same private on-device bridge.</div></div>
+  </div>
+ </div>
+
+ <div class="section card"><div class="kicker">PRIVACY MODEL</div><p class="privacy">The public GitHub repository contains generic application code only. Your display name, tasks, events, spending, habits, notes and action URLs are stored in this browser on this device. Do not hard-code personal information, tokens or API keys into repository files.</p></div>
+</section>
+</main>
 </div>
-
-<nav class="nav"><div class="navin"><button class="on" data-v="today">Today</button><button data-v="life">Life</button><button data-v="settings">Settings</button></div></nav>
+<nav class="nav"><div class="navin">
+<button class="on" data-view="todayView"><span class="navicon">⌂</span>Today</button>
+<button data-view="weekView"><span class="navicon">▦</span>Week</button>
+<button data-view="lifeView"><span class="navicon">✓</span>Life</button>
+<button data-view="settingsView"><span class="navicon">⚙</span>Settings</button>
+</div></nav>
 <script src="./app.js"></script>
-<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+<script>if("serviceWorker"in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
 </body></html>
