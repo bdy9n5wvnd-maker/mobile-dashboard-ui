@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Dashboard">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg">
+  <title>Dashboard</title>
+  <style>
+    :root{--bg:#0b0d10;--card:#15191e;--card2:#1b2026;--text:#f4f6f8;--muted:#9ca6b1;--line:#2a3139;--accent:#7cb7ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:720px;margin:auto;padding:calc(20px + env(safe-area-inset-top)) 14px calc(90px + env(safe-area-inset-bottom))}
+    header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.muted{color:var(--muted);font-size:13px}h1{margin:3px 0;font-size:28px}h2{font-size:17px;margin:0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.section{margin:18px 0}.head{display:flex;justify-content:space-between;align-items:center;margin:0 2px 9px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{min-height:90px}.big{font-size:22px;font-weight:700;margin-top:7px}
+    .item{display:flex;gap:10px;align-items:center;min-height:48px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}
+    .text{flex:1;width:100%;border:0;background:transparent;color:var(--text);font-size:16px;outline:0;padding:12px 0}.done .text{text-decoration:line-through;color:var(--muted)}
+    .habits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.habit{min-height:70px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text)}.habit.on{border-color:var(--accent);background:#172334}
+    .capture{display:flex;gap:8px}.capture input,textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;font-size:16px;outline:0}
+    .primary,.secondary{min-height:44px;border-radius:12px;padding:0 14px}.primary{border:0;background:var(--accent);color:#07111d;font-weight:700}.secondary{border:1px solid var(--line);background:var(--card2);color:var(--text)}
+    .progress{height:7px;background:#262c33;border-radius:9px;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--accent)}
+    .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,13,16,.95);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:7px 12px calc(7px + env(safe-area-inset-bottom))}
+    .navin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.nav button{border:0;background:none;color:var(--muted);padding:10px}.nav button.on{color:var(--accent)}
+    .view{display:none}.view.on{display:block}.field{margin:12px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field input,.field textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;font-size:16px}
+    @media(max-width:430px){.habits{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="muted">PERSONAL DASHBOARD</div><h1 id="greeting">Today</h1></div><div class="muted" id="date"></div></header>
+
+<section id="today" class="view on">
+  <div class="grid">
+    <div class="card metric"><div class="muted">Day progress</div><div class="big" id="score">0%</div><div class="progress"><div class="bar" id="scorebar"></div></div></div>
+    <div class="card metric"><div class="muted">Open tasks</div><div class="big" id="taskcount">0</div><div class="muted" id="tasksub">Nothing overdue</div></div>
+  </div>
+  <div class="section"><div class="head"><h2>Top 3</h2><span class="muted" id="pcount"></span></div><div class="card" id="priorities"></div></div>
+  <div class="section"><div class="head"><h2>Daily basics</h2><span class="muted" id="hcount"></span></div><div class="habits" id="habits"></div></div>
+  <div class="section"><div class="head"><h2>Quick capture</h2></div><div class="card"><form id="captureForm" class="capture"><input id="capture" maxlength="100" placeholder="Task, reminder, idea…"><button class="primary">Add</button></form></div></div>
+  <div class="section"><div class="head"><h2>Daily note</h2><span class="muted">Saved locally</span></div><textarea id="note" rows="5" placeholder="Anything worth remembering today?"></textarea></div>
+</section>
+
+<section id="life" class="view">
+  <div class="head"><h2>Tasks</h2><button id="newTask" class="secondary">+ Add</button></div>
+  <div class="card" id="tasks"></div>
+  <div class="section"><div class="head"><h2>Weekly summary</h2></div>
+    <div class="grid">
+      <div class="card metric"><div class="muted">Habit completion</div><div class="big" id="weekhabits">0%</div></div>
+      <div class="card metric"><div class="muted">Tasks completed</div><div class="big" id="weekdone">0</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="settings" class="view">
+  <div class="card">
+    <div class="field"><label>Display name (stored only on this device)</label><input id="name" maxlength="30" placeholder="Your name"></div>
+    <div class="field"><label>Habits — one per line, maximum 8</label><textarea id="habitnames" rows="6"></textarea></div>
+    <button id="saveSettings" class="primary">Save settings</button>
+  </div>
+  <div class="section card"><div class="muted">PRIVACY</div><p style="line-height:1.5">This repository contains only generic app code. Your name, tasks, habits, check-ins and notes are stored in this browser's local storage and are not written back to GitHub.</p></div>
+</section>
+</div>
+
+<nav class="nav"><div class="navin"><button class="on" data-v="today">Today</button><button data-v="life">Life</button><button data-v="settings">Settings</button></div></nav>
+<script src="./app.js"></script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body></html>
